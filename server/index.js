@@ -12,5 +12,12 @@ app.get('/', (req, res) => {
 })
 
 app.listen(process.env.PORT, () => {
-  console.log(`${process.env.PORT}. PORTTA DİNLİYOR`)
+  mongoose
+    .connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: true,
+    })
+    .then(() => console.log('connected to db'))
+    .catch((err) => console.log(err))
 })
