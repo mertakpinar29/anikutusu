@@ -13,10 +13,13 @@ function App() {
   return (
     <Router>
       <Header />
-      <Container>
-        <Route path='/' component={HomeScreen} exact />
-        <Route path='/create' component={CreateScreen} />
-      </Container>
+      <main className='py-3'>
+        <Container>
+          <Route path='/' component={HomeScreen} exact />
+          <Route path='/create' component={CreateScreen} />
+        </Container>
+      </main>
+
       <Footer />
     </Router>
   )
