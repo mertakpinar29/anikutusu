@@ -12,8 +12,6 @@ router.get('/', async (req, res) => {
     const memories = await Memory.find()
 
     res.status(200).json(memories)
-
-    res.json(memories)
   } catch (error) {
     res.status(404).json({ message: error.message })
   }
@@ -55,13 +53,43 @@ router.post('/', async (req, res) => {
 //Update a memory
 
 router.put('/:id', async (req, res) => {
-  res.json({ message: 'update a memory' })
+  try {
+    const { id } = req.params
+
+    if (!mongoose.Types.ObjectId.isValid(id))
+      res.status(404).json({ message: 'Memory id is not valid' })
+
+    const { title, content, creator, image } = req.body
+
+    const updatedMemory = await Memory.findByIdAndUpdate(
+      id,
+      { title, content, creator, image, _id: id },
+      { new: true }
+    )
+
+    res.status(200).json(updatedMemory)
+  } catch (error) {
+    console.log(error.message)
+    res.json({ message: 'Update failed' })
+  }
 })
 
 //Update a memory
 
 router.delete('/:id', async (req, res) => {
-  res.json({ message: 'delete a memory' })
+  try {
+    const { id } = req.params
+
+    if (!mongoose.Types.ObjectId.isValid(id))
+      res.status(404).json({ message: 'Memory id is not valid' })
+
+    await Memory.findByIdAndDelete(id)
+
+    res.status(200).json({ message: 'Memory has been deleted' })
+  } catch (error) {
+    console.log(error.message)
+    res.json({ message: 'Memory delete failed' })
+  }
 })
 
 export default router
