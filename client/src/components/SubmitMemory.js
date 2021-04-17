@@ -3,6 +3,8 @@ import ReactFileBase64 from 'react-file-base64'
 
 import { Form, Button } from 'react-bootstrap'
 
+import { useHistory } from 'react-router-dom'
+
 import * as api from '../axios/index.js'
 
 const SubmitMemory = () => {
@@ -13,6 +15,8 @@ const SubmitMemory = () => {
     image: '',
   })
 
+  const history = useHistory()
+
   return (
     <>
       <Form
@@ -20,6 +24,8 @@ const SubmitMemory = () => {
           e.preventDefault()
 
           api.createMemory(memoryData)
+
+          history.push('/')
         }}
       >
         <Form.Group>
