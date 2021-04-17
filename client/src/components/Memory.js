@@ -6,6 +6,8 @@ import { MdModeEdit, MdDelete } from 'react-icons/md'
 import { Card } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
+import { deleteMemory } from '../axios/index.js'
+
 const Memory = ({ memory }) => {
   return (
     <Card className='rounded py-3 my-3'>
@@ -22,11 +24,19 @@ const Memory = ({ memory }) => {
         style={{ display: 'flex', justifyContent: 'space-between' }}
         className='bg-white pb-0'
       >
-        <LinkContainer to='/' style={{ cursor: 'pointer' }}>
+        <LinkContainer
+          to={`/update/${memory._id}`}
+          style={{ cursor: 'pointer' }}
+        >
           <MdModeEdit size={25} color='blue' />
         </LinkContainer>
 
-        <MdDelete color='red' style={{ cursor: 'pointer' }} size={25} />
+        <MdDelete
+          color='red'
+          style={{ cursor: 'pointer' }}
+          size={25}
+          onClick={() => deleteMemory(memory._id)}
+        />
       </Card.Footer>
     </Card>
   )

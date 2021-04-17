@@ -8,6 +8,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 
 import { Container } from 'react-bootstrap'
+import UpdateScreen from './Screens/UpdateScreen'
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Container>
           <Route path='/' component={HomeScreen} exact />
           <Route path='/create' component={CreateScreen} />
+          <Route path='/update/:id' component={UpdateScreen} />
         </Container>
       </main>
 
