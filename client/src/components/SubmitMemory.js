@@ -5,7 +5,9 @@ import { Form, Button } from 'react-bootstrap'
 
 import { useHistory } from 'react-router-dom'
 
-import * as api from '../axios/index.js'
+import { useDispatch } from 'react-redux'
+
+import { createMemory } from '../actions/memoryActions'
 
 const SubmitMemory = () => {
   const [memoryData, setMemoryData] = useState({
@@ -16,6 +18,7 @@ const SubmitMemory = () => {
   })
 
   const history = useHistory()
+  const dispatch = useDispatch()
 
   return (
     <>
@@ -23,7 +26,7 @@ const SubmitMemory = () => {
         onSubmit={(e) => {
           e.preventDefault()
 
-          api.createMemory(memoryData)
+          dispatch(createMemory(memoryData))
 
           history.push('/')
         }}

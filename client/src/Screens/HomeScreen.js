@@ -9,10 +9,12 @@ import { Spinner, Row, Col } from 'react-bootstrap'
 
 const HomeScreen = () => {
   const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(fetchMemories())
-  }, [dispatch])
   const memories = useSelector((state) => state.memories)
+  useEffect(() => {
+    if (!memories[0]) {
+      dispatch(fetchMemories())
+    }
+  }, [dispatch])
 
   return (
     <>

@@ -6,9 +6,12 @@ import { MdModeEdit, MdDelete } from 'react-icons/md'
 import { Card } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
-import { deleteMemory } from '../axios/index.js'
+import { useDispatch } from 'react-redux'
+
+import { deleteMemory } from '../actions/memoryActions'
 
 const Memory = ({ memory }) => {
+  const dispatch = useDispatch()
   return (
     <Card className='rounded py-3 my-3'>
       <Card.Img variant='top' src={memory.image} />
@@ -35,7 +38,9 @@ const Memory = ({ memory }) => {
           color='red'
           style={{ cursor: 'pointer' }}
           size={25}
-          onClick={() => deleteMemory(memory._id)}
+          onClick={() => {
+            dispatch(deleteMemory(memory._id))
+          }}
         />
       </Card.Footer>
     </Card>
