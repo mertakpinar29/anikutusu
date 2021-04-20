@@ -16,3 +16,5 @@ export const deleteMemory = async (id) => await API.delete(`/memories/${id}`)
 
 export const signUp = async (formData) =>
   await API.post('/users/signup', formData)
+
+export const logOut = async (id) => await API.get(`/users/logout/${id}`)
