@@ -21,7 +21,7 @@ app.listen(process.env.PORT, () => {
     .connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useFindAndModify: true,
+      useFindAndModify: false,
     })
     .then(() => console.log('connected to db'))
     .catch((err) => console.log(err))

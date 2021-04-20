@@ -53,4 +53,62 @@ router.post('/signup', async (req, res) => {
   }
 })
 
+router.post('/signin', async (req, res) => {
+  try {
+    const { email, password } = req.body
+
+    const user = await User.findOne({ email })
+
+    if (!user) return res.status(404).json({ message: 'Kullanıcı bulunamadı' })
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password)
+    console.log(isPasswordCorrect)
+
+    if (!isPasswordCorrect)
+      return res
+        .status(404)
+        .json({ message: 'Giriş bilgilerinizi kontrol edip tekrar deneyin' })
+
+    const accessToken = jwt.sign(
+      { email: user.email, id: user._id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: '3m' }
+    )
+
+    const refreshToken = jwt.sign(
+      { email: user.email, id: user._id },
+      process.env.REFRESH_TOKEN_SECRET
+    )
+
+    await tokenModel.findOneAndUpdate(
+      { userId: user._id },
+      {
+        refreshToken: refreshToken,
+      },
+      { new: true }
+    )
+
+    res.status(200).json({ user, accessToken })
+  } catch (error) {
+    res.status(500).json(error.message)
+  }
+})
+
+router.get('/logout/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    await tokenModel.findOneAndUpdate(
+      {
+        userId: id,
+      },
+      { refreshToken: null },
+      { new: true }
+    )
+
+    res.status(200).json({ message: 'Başarıyla çıkış yapıldı' })
+  } catch (error) {
+    res.status(500).json(error)
+  }
+})
+
 export default router

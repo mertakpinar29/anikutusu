@@ -26,11 +26,9 @@ const Header = () => {
   }
 
   useEffect(() => {
-    console.log(user)
     if (localStorage.getItem('user') && !user) {
       setUser(JSON.parse(localStorage.getItem('user')))
     }
-    console.log(user)
   }, [location, user])
 
   return (
