@@ -13,6 +13,8 @@ import { RiLogoutCircleLine } from 'react-icons/ri'
 
 import { logout } from '../actions/userActions.js'
 
+import decode from 'jwt-decode'
+
 const Header = () => {
   const dispatch = useDispatch()
   const history = useHistory()
@@ -28,6 +30,17 @@ const Header = () => {
   useEffect(() => {
     if (localStorage.getItem('user') && !user) {
       setUser(JSON.parse(localStorage.getItem('user')))
+    }
+
+    const accessToken = user?.accessToken
+
+    if (accessToken) {
+      const decodedAccessToken = decode(accessToken)
+
+      if (decodedAccessToken.exp * 1000 < new Date().getTime()) {
+        console.log('token süresi doldu')
+        exit(user.user._id)
+      }
     }
   }, [location, user])
 
