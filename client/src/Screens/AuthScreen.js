@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import Message from '../components/Message'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { signup } from '../actions/userActions.js'
+import { signup, signin } from '../actions/userActions.js'
 
 const AuthScreen = ({ history }) => {
   const initialFormData = {
@@ -27,14 +27,27 @@ const AuthScreen = ({ history }) => {
         <Row className='justify-content-center'>
           <Col xs={12} md={6}>
             {login ? (
-              <Form className='align-content-center mt-3'>
+              <Form
+                onSubmit={(e) => {
+                  e.preventDefault()
+
+                  if (login) {
+                    dispatch(signin(form, history))
+                  }
+                }}
+                className='align-content-center mt-3'
+              >
                 <h1 className='text-center mb-3'>Giriş yap</h1>
+                {error && <Message>{error}</Message>}
 
                 <Form.Group>
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type='email'
                     placeholder='Email adresinizi girin'
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
                   ></Form.Control>
                 </Form.Group>
 
@@ -43,6 +56,9 @@ const AuthScreen = ({ history }) => {
                   <Form.Control
                     type='password'
                     placeholder='Şifrenizi girin'
+                    onChange={(e) =>
+                      setForm({ ...form, password: e.target.value })
+                    }
                   ></Form.Control>
                 </Form.Group>
 

@@ -1,6 +1,7 @@
 import {
   AUTH,
   SIGNUP_FAIL,
+  SIGNIN_FAIL,
   LOGOUT,
   LOGOUT_FAILED,
 } from '../constants/actionsConstants.js'
@@ -16,6 +17,24 @@ export const signup = (formData, history) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: SIGNUP_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const signin = (formData, history) => async (dispatch) => {
+  try {
+    const { data } = await api.signIn(formData)
+
+    dispatch({ type: AUTH, payload: data })
+
+    history.push('/')
+  } catch (error) {
+    dispatch({
+      type: SIGNIN_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
