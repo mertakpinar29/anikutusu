@@ -13,18 +13,27 @@ import { RiLogoutCircleLine } from 'react-icons/ri'
 
 import { logout } from '../actions/userActions.js'
 
+import { getRefreshToken } from '../axios'
+
 import decode from 'jwt-decode'
 
 const Header = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const location = useLocation()
+
   const [user, setUser] = useState()
+  const [refreshToken, setRefreshToken] = useState('')
 
   const exit = async (id) => {
     await dispatch(logout(id))
     setUser(null)
     history.push('/')
+  }
+
+  const getToken = async (id) => {
+    const data = await getRefreshToken(id)
+    setRefreshToken(data?.refreshToken)
   }
 
   useEffect(() => {
@@ -42,7 +51,15 @@ const Header = () => {
         exit(user.user._id)
       }
     }
+
+    if (user) {
+      getToken(user.user._id)
+    }
   }, [location, user])
+
+  useEffect(() => {
+    console.log('x')
+  }, [])
 
   return (
     <header>

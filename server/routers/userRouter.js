@@ -62,7 +62,6 @@ router.post('/signin', async (req, res) => {
     if (!user) return res.status(404).json({ message: 'Kullanıcı bulunamadı' })
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password)
-    console.log(isPasswordCorrect)
 
     if (!isPasswordCorrect)
       return res
@@ -72,7 +71,7 @@ router.post('/signin', async (req, res) => {
     const accessToken = jwt.sign(
       { email: user.email, id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '3m' }
+      { expiresIn: '1m' }
     )
 
     const refreshToken = jwt.sign(
@@ -108,6 +107,18 @@ router.get('/logout/:id', async (req, res) => {
     res.status(200).json({ message: 'Başarıyla çıkış yapıldı' })
   } catch (error) {
     res.status(500).json(error)
+  }
+})
+
+router.get('/gettoken/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const { refreshToken } = await tokenModel.findOne({ userId: id })
+    if (!refreshToken) return res.sendStatus(401)
+
+    res.status(200).json({ refreshToken })
+  } catch (error) {
+    console.log(error.message)
   }
 })
 
