@@ -11,9 +11,7 @@ import { FcEditImage } from 'react-icons/fc'
 import { AiOutlineLogin } from 'react-icons/ai'
 import { RiLogoutCircleLine } from 'react-icons/ri'
 
-import { logout } from '../actions/userActions.js'
-
-import { getRefreshToken } from '../axios'
+import { logout, getAccessToken } from '../actions/userActions.js'
 
 import decode from 'jwt-decode'
 
@@ -23,7 +21,6 @@ const Header = () => {
   const location = useLocation()
 
   const [user, setUser] = useState()
-  const [refreshToken, setRefreshToken] = useState('')
 
   const exit = async (id) => {
     await dispatch(logout(id))
@@ -31,9 +28,9 @@ const Header = () => {
     history.push('/')
   }
 
-  const getToken = async (id) => {
-    const data = await getRefreshToken(id)
-    setRefreshToken(data?.refreshToken)
+  const renewAccessToken = async (id) => {
+    await dispatch(getAccessToken(id))
+    setUser(JSON.parse(localStorage.getItem('user')))
   }
 
   useEffect(() => {
@@ -41,25 +38,23 @@ const Header = () => {
       setUser(JSON.parse(localStorage.getItem('user')))
     }
 
-    const accessToken = user?.accessToken
+    const interval = setInterval(() => {
+      const accessToken = user?.accessToken
 
-    if (accessToken) {
-      const decodedAccessToken = decode(accessToken)
+      if (accessToken) {
+        const decodedAccessToken = decode(accessToken)
 
-      if (decodedAccessToken.exp * 1000 < new Date().getTime()) {
-        console.log('token süresi doldu')
-        exit(user.user._id)
+        if (decodedAccessToken.exp * 1000 < new Date().getTime()) {
+          console.log(decodedAccessToken.exp)
+          renewAccessToken(user.user._id)
+        }
       }
-    }
+    }, 5000)
 
-    if (user) {
-      getToken(user.user._id)
+    return () => {
+      clearInterval(interval)
     }
   }, [location, user])
-
-  useEffect(() => {
-    console.log('x')
-  }, [])
 
   return (
     <header>
