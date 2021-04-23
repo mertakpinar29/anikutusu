@@ -20,6 +20,10 @@ const memoSchema = mongoose.Schema({
     type: Date,
     default: new Date(),
   },
+  creatorId: {
+    type: String,
+    required: true,
+  },
 })
 
 const Memory = mongoose.model('memo', memoSchema)

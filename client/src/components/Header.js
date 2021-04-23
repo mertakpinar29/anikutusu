@@ -45,7 +45,6 @@ const Header = () => {
         const decodedAccessToken = decode(accessToken)
 
         if (decodedAccessToken.exp * 1000 < new Date().getTime()) {
-          console.log(decodedAccessToken.exp)
           renewAccessToken(user.user._id)
         }
       }
