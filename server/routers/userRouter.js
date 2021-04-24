@@ -47,6 +47,10 @@ router.post('/signup', async (req, res) => {
       refreshToken: refreshToken,
     })
 
+    res.cookie('token', refreshToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+    })
     res.status(200).json({ user, accessToken })
   } catch (error) {
     console.log(error)
@@ -71,7 +75,7 @@ router.post('/signin', async (req, res) => {
     const accessToken = jwt.sign(
       { email: user.email, id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '3m' }
+      { expiresIn: '15s' }
     )
 
     const refreshToken = jwt.sign(
@@ -87,6 +91,10 @@ router.post('/signin', async (req, res) => {
       { new: true }
     )
 
+    res.cookie('token', refreshToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+    })
     res.status(200).json({ user, accessToken })
   } catch (error) {
     res.status(500).json(error.message)
@@ -96,6 +104,8 @@ router.post('/signin', async (req, res) => {
 router.get('/logout/:id', async (req, res) => {
   try {
     const { id } = req.params
+
+    res.clearCookie('token')
     await tokenModel.findOneAndUpdate(
       {
         userId: id,
@@ -116,13 +126,18 @@ router.get('/refresh/:id', async (req, res) => {
     const { refreshToken } = await tokenModel.findOne({ userId: id })
     if (!refreshToken) return res.sendStatus(401)
 
+    const cookie = req.cookies.token
+    if (!cookie) res.sendStatus(403)
+
+    if (cookie !== refreshToken) res.sendStatus(401)
+
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, x) => {
       if (err) return res.status(403).json(err)
 
       const accessToken = jwt.sign(
         { email: x.email, id: x.id },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '3m' }
+        { expiresIn: '15s' }
       )
 
       res.status(200).json(accessToken)
