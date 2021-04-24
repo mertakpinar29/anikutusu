@@ -64,6 +64,9 @@ router.put('/:id', auth, async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id))
       res.status(404).json({ message: 'Memory id is not valid' })
 
+    const oldMemory = await Memory.findById(id)
+    if (req.creatorId !== oldMemory.creatorId) return res.sendStatus(403)
+
     const { title, content, creator, image } = req.body
 
     const updatedMemory = await Memory.findByIdAndUpdate(
@@ -79,7 +82,7 @@ router.put('/:id', auth, async (req, res) => {
   }
 })
 
-//Update a memory
+//Delete a memory
 
 router.delete('/:id', auth, async (req, res) => {
   try {
@@ -87,6 +90,9 @@ router.delete('/:id', auth, async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(id))
       res.status(404).json({ message: 'Memory id is not valid' })
+
+    const oldMemory = await Memory.findById(id)
+    if (req.creatorId !== oldMemory.creatorId) return res.sendStatus(403)
 
     await Memory.findByIdAndDelete(id)
 
