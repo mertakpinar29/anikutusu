@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Navbar, Nav, Button } from 'react-bootstrap'
 
@@ -21,6 +21,7 @@ const Header = () => {
   const location = useLocation()
 
   const [user, setUser] = useState()
+  const userState = useSelector((state) => state.user)
 
   const exit = async (id) => {
     await dispatch(logout(id))
@@ -29,8 +30,10 @@ const Header = () => {
   }
 
   const renewAccessToken = async (id) => {
-    await dispatch(getAccessToken(id))
-    setUser(JSON.parse(localStorage.getItem('user')))
+    if (!userState.googleLogin) {
+      await dispatch(getAccessToken(id))
+      setUser(JSON.parse(localStorage.getItem('user')))
+    }
   }
 
   useEffect(() => {

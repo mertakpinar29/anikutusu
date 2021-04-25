@@ -33,7 +33,8 @@ const Memory = ({ memory }) => {
         <Card.Subtitle>{moment(memory.createdAt).fromNow()}</Card.Subtitle>
       </Card.Body>
 
-      {user?.user?._id === memory.creatorId ? (
+      {user?.user?._id === memory.creatorId ||
+      user?.user?.googleId === memory.creatorId ? (
         <Card.Footer
           style={{ display: 'flex', justifyContent: 'space-between' }}
           className='bg-white pb-0'

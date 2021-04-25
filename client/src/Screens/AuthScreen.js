@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import Message from '../components/Message'
+import { GoogleLogin } from 'react-google-login'
+import { FcGoogle } from 'react-icons/fc'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { signup, signin } from '../actions/userActions.js'
@@ -21,6 +23,24 @@ const AuthScreen = ({ history }) => {
   const [login, setLogin] = useState(true)
 
   const dispatch = useDispatch()
+
+  const googleSuccess = (res) => {
+    const user = res?.profileObj
+    const accessToken = res?.tokenId
+    const googleLogin = 'google'
+
+    try {
+      dispatch({ type: 'AUTH', payload: { user, accessToken, googleLogin } })
+
+      history.push('/')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const googleFailure = (err) => {
+    console.log(err)
+  }
   return (
     <>
       <Container>
@@ -65,6 +85,23 @@ const AuthScreen = ({ history }) => {
                 <Button block type='submit'>
                   Giriş yap
                 </Button>
+
+                <GoogleLogin
+                  clientId='51344977623-ol7jrbhpcpf4kbvb4vdhpvqs7uq6cofi.apps.googleusercontent.com'
+                  onSuccess={googleSuccess}
+                  onFailure={googleFailure}
+                  render={(renderProps) => (
+                    <Button
+                      onClick={renderProps.onClick}
+                      disabled={renderProps.disabled}
+                      block
+                      variant='info'
+                    >
+                      <FcGoogle size={22} className='text-center mr-2' />
+                      Google hesabınız ile giriş yapın
+                    </Button>
+                  )}
+                />
 
                 <Form.Text as='large' className='text-center mt-2'>
                   Henüz bir hesabın yok mu?{' '}
