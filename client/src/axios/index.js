@@ -1,9 +1,8 @@
 import axios from 'axios'
 
 const API = axios.create({
-  baseURL: 'https://ani-kutusu.herokuapp.com/',
+  baseURL: 'https://ani-kutusu.herokuapp.com',
   withCredentials: true,
-  credentials: 'include',
 })
 
 API.interceptors.request.use((req) => {
